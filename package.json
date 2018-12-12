@@ -5,7 +5,7 @@
   "main": "dist",
   "types": "dist",
   "scripts": {
-    "dev": "node ./test/index.js",
+    "dev": "node ./scripts/dev",
     "build": "tsc -p ."
   },
   "repository": {
