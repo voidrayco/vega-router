@@ -9,6 +9,7 @@ export class App extends Router<IAppProps> {
     super(props);
 
     RouteManager.setNotFoundComponent(() => <h4>Route Not Found</h4>);
+    RouteManager.setRouteClassName('Content');
 
     this.addRoute('settings', /^\/settings/, Settings);
     this.addRoute('contact', /^\/contact\/?$/, Contact);
@@ -18,23 +19,29 @@ export class App extends Router<IAppProps> {
   }
 
   render() {
-    return <div>
-      <header>
-        <a href="/">home</a> | <a href="/settings">settings</a> | <a href="/contact">contact</a>
-      </header>
+    return (
       <div>
-        <h1>Vega Router Test App</h1>
-        {super.render()}
+        <header>
+          <a href="/">home</a> | <a href="/settings">settings</a> | <a href="/contact">contact</a>
+        </header>
+        <div>
+          <h1>Vega Router Test App</h1>
+          {super.render()}
+        </div>
+        <footer>&copy; {new Date().getFullYear()} Vega</footer>
       </div>
-      <footer>&copy; {new Date().getFullYear()} Vega</footer>
-    </div>
+    );
   }
 }
 
-class Home extends Component {
+interface IBaseProps {
+  className?: string;
+}
+
+class Home extends Component<IBaseProps> {
   render() {
     return (
-      <div>
+      <div className={this.props.className}>
         <h2>Home Page</h2>
         <p>This is the home page</p>
       </div>
@@ -42,10 +49,10 @@ class Home extends Component {
   }
 }
 
-class Contact extends Component {
+class Contact extends Component<IBaseProps> {
   render() {
     return (
-      <div>
+      <div className={this.props.className}>
         <h2>Contact Page</h2>
         <p>This is the contact page</p>
       </div>
@@ -53,7 +60,7 @@ class Contact extends Component {
   }
 }
 
-interface ISettingsProps {}
+interface ISettingsProps extends IBaseProps {}
 
 class Settings extends Router<ISettingsProps> {
   constructor(props: ISettingsProps) {
@@ -65,7 +72,7 @@ class Settings extends Router<ISettingsProps> {
 
   render() {
     return (
-      <div>
+      <div className={this.props.className}>
         <h2>Settings Page</h2>
         <p>This is the settings page</p>
         <div>
@@ -77,20 +84,20 @@ class Settings extends Router<ISettingsProps> {
   }
 }
 
-class SettingsAccount extends Component {
+class SettingsAccount extends Component<IBaseProps> {
   render() {
     return (
-      <div>
+      <div className={this.props.className}>
         <h3>Account Settings</h3>
       </div>
     );
   }
 }
 
-class SettingsBilling extends Component {
+class SettingsBilling extends Component<IBaseProps> {
   render() {
     return (
-      <div>
+      <div className={this.props.className}>
         <h3>Billing Settings</h3>
       </div>
     );

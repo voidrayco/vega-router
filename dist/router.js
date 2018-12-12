@@ -23,6 +23,14 @@ var Router = (function (_super) {
         _this.component = null;
         _this.routes = [];
         _this.route = null;
+        _this.params = {};
+        _this.addRoute = function (name, path, component, paramNames, className) {
+            var route = _this.routes.some(function (route) { return route.name === name; });
+            if (route) {
+                throw new Error("route with name \"" + name + "\" already exists");
+            }
+            _this.routes.push({ name: name, path: path, component: component, paramNames: paramNames, className: className });
+        };
         _this.matchRoutes = function () {
             if (_this.unmounting)
                 return;
@@ -30,8 +38,8 @@ var Router = (function (_super) {
             var _loop_1 = function (route) {
                 var match = location.pathname.match(route.path);
                 if (match) {
-                    var params = match.slice(1);
-                    var namedParams = params.reduce(function (a, b, i) {
+                    var paramValues = match.slice(1);
+                    _this.params = paramValues.reduce(function (a, b, i) {
                         if (route.paramNames && route.paramNames[i]) {
                             a[route.paramNames[i]] = b;
                         }
@@ -40,7 +48,7 @@ var Router = (function (_super) {
                         }
                         return a;
                     }, {});
-                    _this.component = React.createElement(route.component, { params: namedParams });
+                    _this.component = React.createElement(route.component, { className: route.className || RouteManager.routeClassName, params: _this.params });
                     _this.route = route;
                     _this.forceUpdate();
                     return { value: void 0 };
@@ -65,11 +73,8 @@ var Router = (function (_super) {
         this.unmounting = true;
         RouteManager.removeStateListener(this.matchRoutes);
     };
-    Router.prototype.addRoute = function (name, path, component, paramNames) {
-        this.routes.push({ name: name, path: path, component: component, paramNames: paramNames });
-    };
-    Router.prototype.removeRoute = function (path) {
-        this.routes = this.routes.filter(function (route) { return route.path !== path; });
+    Router.prototype.removeRoute = function (name) {
+        this.routes = this.routes.filter(function (route) { return route.name !== name; });
     };
     Router.prototype.render = function () {
         return this.component;
@@ -102,6 +107,9 @@ var RouteManager = (function () {
     RouteManager.stateListeners = [];
     RouteManager.setNotFoundComponent = function (component) {
         RouteManager.notFoundComponent = component;
+    };
+    RouteManager.setRouteClassName = function (className) {
+        RouteManager.routeClassName = className;
     };
     RouteManager.transitionTo = function (to) {
         window.history.pushState(null, '', to);

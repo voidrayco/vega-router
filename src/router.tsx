@@ -6,6 +6,7 @@ interface IRoute {
   name: string | (() => string);
   path: RegExp;
   paramNames?: string[];
+  className?: string;
 }
 
 export class Router<Props = {}, State = {}> extends Component<Props, State> {
@@ -14,6 +15,7 @@ export class Router<Props = {}, State = {}> extends Component<Props, State> {
   component: any = null;
   routes: IRoute[] = [];
   route: IRoute | null = null;
+  params: {[key: string]: string} = {};
 
   componentWillMount() {
     RouteManager.addStateListener(this.matchRoutes);
@@ -26,17 +28,22 @@ export class Router<Props = {}, State = {}> extends Component<Props, State> {
     RouteManager.removeStateListener(this.matchRoutes);
   }
 
-  addRoute(
+  addRoute = (
     name: IRoute['name'],
     path: IRoute['path'],
     component: IRoute['component'],
-    paramNames?: IRoute['paramNames']
-  ) {
-    this.routes.push({ name, path, component, paramNames });
-  }
+    paramNames?: IRoute['paramNames'],
+    className?: IRoute['className'],
+  ) => {
+    const route = this.routes.some(route => route.name === name);
+    if (route) {
+      throw new Error(`route with name "${name}" already exists`);
+    }
+    this.routes.push({ name, path, component, paramNames, className });
+  };
 
-  removeRoute(path: RegExp) {
-    this.routes = this.routes.filter(route => route.path !== path);
+  removeRoute(name: string) {
+    this.routes = this.routes.filter(route => route.name !== name);
   }
 
   private matchRoutes = () => {
@@ -46,8 +53,8 @@ export class Router<Props = {}, State = {}> extends Component<Props, State> {
     for (const route of this.routes) {
       const match = location.pathname.match(route.path);
       if (match) {
-        const params = match.slice(1);
-        const namedParams = params.reduce<{ [key: string]: string }>(
+        const paramValues = match.slice(1);
+        this.params = paramValues.reduce<{ [key: string]: string }>(
           (a, b, i) => {
             if (route.paramNames && route.paramNames[i]) {
               a[route.paramNames[i]] = b;
@@ -58,7 +65,7 @@ export class Router<Props = {}, State = {}> extends Component<Props, State> {
           },
           {}
         );
-        this.component = <route.component params={namedParams} />;
+        this.component = <route.component className={route.className || RouteManager.routeClassName} params={this.params} />;
         this.route = route;
         this.forceUpdate();
         return;
@@ -76,7 +83,11 @@ export class Router<Props = {}, State = {}> extends Component<Props, State> {
   }
 }
 
-export class Link extends Component<{ to: string }> {
+interface ILinkProps {
+  to: string;
+}
+
+export class Link extends Component<ILinkProps> {
   onClick = () => {
     RouteManager.transitionTo(this.props.to);
   };
@@ -92,10 +103,15 @@ window.onpopstate = () => {
 
 export class RouteManager {
   static notFoundComponent: any = null;
+  static routeClassName: string | undefined;
   static stateListeners: (() => void)[] = [];
 
   static setNotFoundComponent = (component: any) => {
     RouteManager.notFoundComponent = component;
+  };
+
+  static setRouteClassName = (className?: string) => {
+    RouteManager.routeClassName = className;
   };
 
   static transitionTo = (to: string) => {
