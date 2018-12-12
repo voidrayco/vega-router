@@ -1,0 +1,33 @@
+{
+  "name": "vega-router",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "module": "./src/index.ts",
+  "scripts": {
+    "dev": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voidrayco/vega-router.git"
+  },
+  "keywords": [],
+  "author": "Oscar Armstrong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/voidrayco/vega-router/issues"
+  },
+  "homepage": "https://github.com/voidrayco/vega-router#readme",
+  "peerDependencies": {
+    "react": ">=15"
+  },
+  "devDependencies": {
+    "@types/react": "16.7.13",
+    "@types/react-dom": "16.0.11",
+    "commander": "2.19.0",
+    "parcel-bundler": "1.10.3",
+    "react": "16.6.3",
+    "react-dom": "16.6.3",
+    "typescript": "3.2.2"
+  }
+}
