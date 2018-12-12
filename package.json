@@ -2,9 +2,11 @@
   "name": "vega-router",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/index.ts",
+  "main": "dist",
+  "types": "dist",
   "scripts": {
-    "dev": "node ./test/index.js"
+    "dev": "node ./test/index.js",
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",
