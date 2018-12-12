@@ -4,13 +4,13 @@
 
 Install the router
 
-```
-npm i vega-router
+```sh
+npm install --save-dev vega-router
 ```
 
 Import it and extend it
 
-```
+```ts
 import * as React from 'react';
 import { Router } from 'vega-router';
 
@@ -65,12 +65,12 @@ class Contact extends Component {
 
 Install dependencies
 
-```
-npm i
+```sh
+npm install
 ```
 
 Run the test app
 
-```
+```sh
 npm run dev
 ```
