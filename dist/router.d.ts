@@ -34,7 +34,7 @@ export declare class RouteManager {
     static stateListeners: (() => void)[];
     static setNotFoundComponent: (component: any) => void;
     static setRouteClassName: (className?: string | undefined) => void;
-    static transitionTo: (to: string) => void;
+    static transitionTo: (to: string, replace?: boolean | undefined) => void;
     static addStateListener: (listener: () => void) => void;
     static removeStateListener: (listener: () => void) => void;
     static runStateListeners: () => void;
