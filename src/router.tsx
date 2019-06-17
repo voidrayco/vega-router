@@ -114,8 +114,12 @@ export class RouteManager {
     RouteManager.routeClassName = className;
   };
 
-  static transitionTo = (to: string) => {
-    window.history.pushState(null, '', to);
+  static transitionTo = (to: string, replace?: boolean) => {
+    if (replace) {
+      window.history.replaceState(null, '', to);
+    } else {
+      window.history.pushState(null, '', to);
+    }
     RouteManager.runStateListeners();
   };
 

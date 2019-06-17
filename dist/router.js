@@ -111,8 +111,13 @@ var RouteManager = (function () {
     RouteManager.setRouteClassName = function (className) {
         RouteManager.routeClassName = className;
     };
-    RouteManager.transitionTo = function (to) {
-        window.history.pushState(null, '', to);
+    RouteManager.transitionTo = function (to, replace) {
+        if (replace) {
+            window.history.replaceState(null, '', to);
+        }
+        else {
+            window.history.pushState(null, '', to);
+        }
         RouteManager.runStateListeners();
     };
     RouteManager.addStateListener = function (listener) {
